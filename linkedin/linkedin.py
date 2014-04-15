@@ -582,3 +582,32 @@ class LinkedInApplication(object):
         except (requests.ConnectionError, requests.HTTPError), error:
             raise LinkedInHTTPError(error.message)
         return True
+
+
+    def get_company_post_comments(self, company_id, post_id, params=None, headers=None):
+        url = '%s/%s/updates/key=%s/update-comments' % (ENDPOINTS.COMPANIES, str(company_id), post_id)
+        try:
+            response = self.make_request('GET', url, params=params, headers=headers)
+            response = response.json()
+        except requests.ConnectionError as error:
+            raise LinkedInHTTPError(error.message)
+        else:
+            if response:
+                if not self.request_succeeded(response):
+                    raise LinkedInError(response)
+            return response
+
+    def get_company_post_likes(self, company_id, post_id, params=None, headers=None):
+        url = '%s/%s/updates/key=%s/likes' % (ENDPOINTS.COMPANIES, str(company_id), post_id)
+        try:
+            response = self.make_request('GET', url, params=params, headers=headers)
+            response = response.json()
+        except requests.ConnectionError as error:
+            raise LinkedInHTTPError(error.message)
+        else:
+            if response:
+                if not self.request_succeeded(response):
+                    raise LinkedInError(response)
+
+            return response
+
